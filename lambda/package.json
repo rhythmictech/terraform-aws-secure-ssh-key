@@ -1,11 +1,11 @@
 {
-  "name": "lambda-create-password-secret",
+  "name": "lambda-ssh-key-secret",
   "author": "Scott Miller",
   "dependencies": {
     "aws-sdk": "^2.702.0",
-    "secure-random-password": "^0.2.1"
+    "node-forge": "^0.9.1"
   },
-  "description": "Generates a random password, saves it to a secret, and returns metadata about the secret",
+  "description": "Generates an ssh key, saves it to a secret, and returns metadata about the secret",
   "devDependencies": {
     "eslint": "^7.3.1",
     "eslint-config-standard": "^14.1.1",

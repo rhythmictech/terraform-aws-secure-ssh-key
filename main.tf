@@ -40,7 +40,7 @@ resource "aws_iam_role" "this" {
 }
 
 locals {
-  zipfile = "${path.module}/lambda/build/lambda-create-password-secret-production.zip"
+  zipfile = "${path.module}/lambda/build/lambda-ssh-key-secret-production.zip"
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
@@ -80,61 +80,47 @@ resource "aws_lambda_function" "this" {
   )
 }
 
-resource "aws_secretsmanager_secret" "this" {
-  name_prefix = "${var.name}-"
+resource "aws_secretsmanager_secret" "privkey" {
+  name_prefix = "${var.name}-privkey-"
   description = var.secret_description
   tags = merge(
     var.tags,
     {
-      Name = var.name
+      Name = "${var.name}-privkey"
+    }
+  )
+}
+
+resource "aws_secretsmanager_secret" "pubkey" {
+  name_prefix = "${var.name}-pubkey-"
+  description = var.secret_description
+  tags = merge(
+    var.tags,
+    {
+      Name = "${var.name}-pubkey"
     }
   )
 }
 
 locals {
-  password_params = {
-    length             = var.length
-    upper              = var.upper
-    min_upper          = var.min_upper
-    lower              = var.lower
-    min_lower          = var.min_lower
-    number             = var.number
-    min_numeric        = var.min_numeric
-    special            = var.special
-    min_special        = var.min_special
-    override_special   = var.override_special
-    secret_name        = aws_secretsmanager_secret.this.name
-    secret_description = var.secret_description
+  key_params = {
+    pubkey_secret_name  = aws_secretsmanager_secret.pubkey.name
+    privkey_secret_name = aws_secretsmanager_secret.privkey.name
+    secret_description  = var.secret_description
   }
-}
-
-# Using a random_string as a trigger for when the password should be re-created.
-# This allows the Terraform re-creation logic to be duplicated exactly.
-resource "random_string" "trigger" {
-  keepers = var.keepers
-
-  length           = var.length
-  upper            = var.upper
-  min_upper        = var.min_upper
-  lower            = var.lower
-  min_lower        = var.min_lower
-  number           = var.number
-  min_numeric      = var.min_numeric
-  special          = var.special
-  min_special      = var.min_special
-  override_special = var.override_special
 }
 
 module "lambda_invocation" {
   source  = "matti/resource/shell"
   version = "~>1.0.7"
 
-  command = "aws lambda invoke --function-name ${aws_lambda_function.this.function_name} --payload '${jsonencode(local.password_params)}' /tmp/lambda_invocation_output"
-  trigger = random_string.trigger.result
+  command = "aws lambda invoke --function-name ${aws_lambda_function.this.function_name} --payload '${jsonencode(local.key_params)}' /tmp/lambda_invocation_output"
+  trigger = join(",", values(var.keepers))
 
   depends = [
     aws_lambda_function.this.arn,
-    aws_secretsmanager_secret.this
+    aws_secretsmanager_secret.pubkey,
+    aws_secretsmanager_secret.privkey
   ]
 }
 
