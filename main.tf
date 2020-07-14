@@ -133,3 +133,7 @@ module "lambda_invocation_result" {
   trigger     = module.lambda_invocation.id
   working_dir = path.module
 }
+
+data "aws_secretsmanager_secret_version" "pubkey" {
+  secret_id = aws_secretsmanager_secret.pubkey.id
+}

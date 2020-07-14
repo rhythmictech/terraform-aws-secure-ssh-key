@@ -17,3 +17,8 @@ output "invocation_result_stderr" {
   description = "stderr of invocation_result"
   value       = module.lambda_invocation_result.stderr
 }
+
+output "ssh_pubkey" {
+  description = "The SSH pubkey"
+  value       = data.aws_secretsmanager_secret_version.pubkey.secret_string
+}
