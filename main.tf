@@ -135,5 +135,6 @@ module "lambda_invocation_result" {
 }
 
 data "aws_secretsmanager_secret_version" "pubkey" {
-  secret_id = aws_secretsmanager_secret.pubkey.id
+  depends_on = [module.lambda_invocation.stdout]
+  secret_id  = aws_secretsmanager_secret.pubkey.id
 }
