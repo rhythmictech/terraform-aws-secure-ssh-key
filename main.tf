@@ -65,6 +65,12 @@ resource "aws_lambda_function" "this" {
   runtime          = "nodejs12.x"
   source_code_hash = try(filebase64sha256(local.zipfile), null)
 
+  environment {
+    variables = {
+      KEY_BITS = var.key_bits
+    }
+  }
+
   lifecycle {
     ignore_changes = [
       filename,

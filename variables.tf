@@ -21,3 +21,9 @@ variable "keepers" {
   description = "Arbitrary map of values that when changed will force a new password"
   type        = map(string)
 }
+
+variable "key_bits" {
+  default     = 2048
+  description = "Number of bits to be used in RSA key generation"
+  type        = number
+}
