@@ -50,6 +50,7 @@ Creates an ssh key with a Lambda data source and saves it in a secrets manager s
 | invocation\_stderr | stderr of invocation command |
 | invocation\_stdout | stdout of invocation command |
 | result | String result of Lambda execution |
+| secret\_arn | The ARN of the SecretsManager Secret |
 | ssh\_pubkey | The SSH pubkey |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
