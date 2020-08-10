@@ -54,10 +54,6 @@ resource "aws_iam_role_policy_attachment" "secretsmanager_read_write" {
 }
 
 resource "aws_lambda_function" "this" {
-  depends_on = [
-    module.lambda_package
-  ]
-
   filename         = local.zipfile
   function_name    = var.name
   handler          = "index.handler"
@@ -78,12 +74,9 @@ resource "aws_lambda_function" "this" {
     }
   )
 
-  lifecycle {
-    ignore_changes = [
-      filename,
-      last_modified
-    ]
-  }
+  depends_on = [
+    module.lambda_package
+  ]
 }
 
 resource "aws_secretsmanager_secret" "privkey" {
@@ -141,6 +134,7 @@ module "lambda_invocation_result" {
 }
 
 data "aws_secretsmanager_secret_version" "pubkey" {
+  secret_id = aws_secretsmanager_secret.pubkey.id
+
   depends_on = [module.lambda_invocation.stdout]
-  secret_id  = aws_secretsmanager_secret.pubkey.id
 }
