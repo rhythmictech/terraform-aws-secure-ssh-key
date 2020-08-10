@@ -10,12 +10,6 @@ variable "secret_description" {
   type        = string
 }
 
-variable "tags" {
-  default     = {}
-  description = "User-Defined tags"
-  type        = map(string)
-}
-
 variable "keepers" {
   default     = {}
   description = "Arbitrary map of values that when changed will force a new password"
@@ -26,4 +20,10 @@ variable "key_bits" {
   default     = 2048
   description = "Number of bits to be used in RSA key generation"
   type        = number
+}
+
+variable "tags" {
+  default     = {}
+  description = "User-Defined tags"
+  type        = map(string)
 }

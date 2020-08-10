@@ -39,7 +39,7 @@ Creates an ssh key with a Lambda data source and saves it in a secrets manager s
 | name | Moniker to apply to all resources in the module | `string` | n/a | yes |
 | keepers | Arbitrary map of values that when changed will force a new password | `map(string)` | `{}` | no |
 | key\_bits | Number of bits to be used in RSA key generation | `number` | `2048` | no |
-| secret\_description | Set a description for the secret | `string` | `"A password created by Terraform"` | no |
+| secret\_description | Set a description for the secret | `string` | `"An SSH key secret by Terraform"` | no |
 | tags | User-Defined tags | `map(string)` | `{}` | no |
 
 ## Outputs
