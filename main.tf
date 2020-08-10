@@ -71,19 +71,19 @@ resource "aws_lambda_function" "this" {
     }
   }
 
-  lifecycle {
-    ignore_changes = [
-      filename,
-      last_modified
-    ]
-  }
-
   tags = merge(
     var.tags,
     {
       "Name" = var.name
     }
   )
+
+  lifecycle {
+    ignore_changes = [
+      filename,
+      last_modified
+    ]
+  }
 }
 
 resource "aws_secretsmanager_secret" "privkey" {
