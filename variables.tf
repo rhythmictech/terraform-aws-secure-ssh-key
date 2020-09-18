@@ -1,3 +1,8 @@
+variable "lambda_version_constraint" {
+  default     = "^1.0.0-rc1"
+  description = "NPM-style version constraint for the version of the lambda code you want to use"
+  type        = string
+}
 
 variable "name" {
   description = "Moniker to apply to all resources in the module"

@@ -31,6 +31,7 @@ Creates an ssh key with a Lambda data source and saves it in a secrets manager s
 | Name | Version |
 |------|---------|
 | aws | n/a |
+| null | n/a |
 
 ## Inputs
 
@@ -39,6 +40,7 @@ Creates an ssh key with a Lambda data source and saves it in a secrets manager s
 | name | Moniker to apply to all resources in the module | `string` | n/a | yes |
 | keepers | Arbitrary map of values that when changed will force a new password | `map(string)` | `{}` | no |
 | key\_bits | Number of bits to be used in RSA key generation | `number` | `2048` | no |
+| lambda\_version\_constraint | NPM-style version constraint for the version of the lambda code you want to use | `string` | `"^1.0.0-rc1"` | no |
 | secret\_description | Set a description for the secret | `string` | `"An SSH key secret by Terraform"` | no |
 | tags | User-Defined tags | `map(string)` | `{}` | no |
 
@@ -46,11 +48,10 @@ Creates an ssh key with a Lambda data source and saves it in a secrets manager s
 
 | Name | Description |
 |------|-------------|
-| invocation\_result\_stderr | stderr of invocation\_result |
-| invocation\_stderr | stderr of invocation command |
-| invocation\_stdout | stdout of invocation command |
-| result | String result of Lambda execution |
-| secret\_arn | The ARN of the SecretsManager Secret |
+| privkey\_secret\_arn | The ARN of the SecretsManager privkey Secret |
+| privkey\_secret\_name | The name of the privkey secret |
+| pubkey\_secret\_arn | The ARN of the SecretsManager privkey Secret |
+| pubkey\_secret\_name | The name of the privkey secret |
 | ssh\_pubkey | The SSH pubkey |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
