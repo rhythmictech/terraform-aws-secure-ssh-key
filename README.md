@@ -11,9 +11,17 @@ Creates an ssh key with a Lambda data source and saves it in a secrets manager s
 ## Example
 Here's what using the module will look like
 ```hcl
-module "example" {
-  source = "rhythmictech/terraform-mycloud-mymodule
+module "secure_ssh_key" {
+  source  = "rhythmictech/secure-ssh_key/aws"
+  version = "~> 1.0.0-rc1"
+
+  name   = "my-secure-key"
 }
+
+output "secret_name" {
+  value = module.secure_ssh_key.privkey_secret_name
+}
+
 ```
 
 ## About
@@ -24,13 +32,14 @@ Creates an ssh key with a Lambda data source and saves it in a secrets manager s
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12.14 |
+| terraform | ~> 0.12.28 |
+| aws | >= 2.45.0, < 4.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | n/a |
+| aws | >= 2.45.0, < 4.0.0 |
 | null | n/a |
 
 ## Inputs
