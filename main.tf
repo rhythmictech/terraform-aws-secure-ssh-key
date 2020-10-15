@@ -163,7 +163,26 @@ module "lambda_invocation_result" {
 }
 
 data "aws_secretsmanager_secret_version" "pubkey" {
-  secret_id = aws_secretsmanager_secret.pubkey.id
+  secret_id = aws_secretsmanager_secret.pubkey.name
 
-  depends_on = [module.lambda_invocation.stdout]
+  depends_on = [
+    module.lambda_invocation.stdout,
+    module.lambda_invocation
+  ]
+}
+
+resource "null_resource" "pubkey" {
+  triggers = {
+    on_version_change = local.lambda_version,
+    new_invocation    = module.lambda_invocation.stdout
+  }
+
+  provisioner "local-exec" {
+    command = "aws --output json secretsmanager get-secret-value --secret-id ${aws_secretsmanager_secret.pubkey.name} | jq -r '.SecretString'"
+  }
+
+  depends_on = [
+    module.lambda_invocation.stdout,
+    module.lambda_invocation
+  ]
 }
