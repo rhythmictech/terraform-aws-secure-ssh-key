@@ -161,10 +161,16 @@ resource "null_resource" "lambda_invoke" {
   ]
 }
 
-data "aws_secretsmanager_secret_version" "pubkey" {
-  secret_id = aws_secretsmanager_secret.pubkey.name
+module "pubkey" {
+  source  = "matti/resource/shell"
+  version = "~> 1.0.7"
 
-  depends_on = [
+  command = "aws secretsmanager get-secret-value --secret-id ${aws_secretsmanager_secret.pubkey.name} | jq -r '.SecretString'"
+
+  working_dir = path.module
+  trigger     = null_resource.lambda_invoke.id
+
+  depends = [
     null_resource.lambda_invoke
   ]
 }
