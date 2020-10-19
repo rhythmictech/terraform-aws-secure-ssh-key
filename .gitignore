@@ -7,3 +7,5 @@
 
 # .tfvars files
 *.tfvars
+
+lambda_invocation_output
