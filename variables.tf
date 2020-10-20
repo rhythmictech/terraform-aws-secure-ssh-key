@@ -1,5 +1,5 @@
 variable "lambda_version_constraint" {
-  default     = "^1.0.1-rc2"
+  default     = "^1.0.2-rc2"
   description = "NPM-style version constraint for the version of the lambda code you want to use"
   type        = string
 }
