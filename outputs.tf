@@ -22,5 +22,5 @@ output "pubkey_secret_name" {
 
 output "ssh_pubkey" {
   description = "The SSH pubkey"
-  value       = data.aws_secretsmanager_secret_version.pubkey.secret_string
+  value       = module.pubkey.stdout
 }

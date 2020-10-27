@@ -46,7 +46,7 @@ data "aws_iam_policy_document" "assume" {
 }
 
 resource "aws_iam_role" "this" {
-  name_prefix = "${var.name}-"
+  name_prefix = substr(var.name, 0, 32)
   description = "Role for ${var.name} to create secret"
 
   assume_role_policy = data.aws_iam_policy_document.assume.json
@@ -89,6 +89,7 @@ resource "aws_lambda_function" "this" {
   handler       = "index.handler"
   role          = aws_iam_role.this.arn
   runtime       = "nodejs12.x"
+  timeout       = 30
 
   environment {
     variables = {
@@ -106,6 +107,12 @@ resource "aws_lambda_function" "this" {
   depends_on = [
     null_resource.lambda_zip
   ]
+}
+
+resource "aws_cloudwatch_log_group" "this" {
+  name              = "/aws/lambda/${var.name}"
+  retention_in_days = 14
+  tags              = var.tags
 }
 
 resource "aws_secretsmanager_secret" "privkey" {
@@ -138,32 +145,32 @@ locals {
   }
 }
 
-module "lambda_invocation" {
-  source  = "matti/resource/shell"
-  version = "~>1.0.7"
+resource "null_resource" "lambda_invoke" {
+  triggers = {
+    keepers = join(",", values(var.keepers))
+  }
 
-  command = "aws lambda invoke --function-name ${aws_lambda_function.this.function_name} --payload '${jsonencode(local.key_params)}' ${path.module}/tmp/lambda_invocation_output"
-  trigger = join(",", values(var.keepers))
+  provisioner "local-exec" {
+    command = "aws lambda invoke --function-name ${aws_lambda_function.this.function_name} --payload '${jsonencode(local.key_params)}' --cli-binary-format raw-in-base64-out ${path.module}/lambda_invocation_output"
+  }
 
-  depends = [
-    aws_lambda_function.this.arn,
+  depends_on = [
+    aws_lambda_function.this,
     aws_secretsmanager_secret.pubkey,
     aws_secretsmanager_secret.privkey
   ]
 }
 
-module "lambda_invocation_result" {
+module "pubkey" {
   source  = "matti/resource/shell"
-  version = "~>1.0.7"
+  version = "~> 1.0.7"
 
-  command     = "cat /tmp/lambda_invocation_output"
-  depends     = [module.lambda_invocation]
-  trigger     = module.lambda_invocation.id
+  command = "aws secretsmanager get-secret-value --secret-id ${aws_secretsmanager_secret.pubkey.name} | jq -r '.SecretString'"
+
   working_dir = path.module
-}
+  trigger     = null_resource.lambda_invoke.id
 
-data "aws_secretsmanager_secret_version" "pubkey" {
-  secret_id = aws_secretsmanager_secret.pubkey.id
-
-  depends_on = [module.lambda_invocation.stdout]
+  depends = [
+    null_resource.lambda_invoke
+  ]
 }

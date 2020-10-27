@@ -27,12 +27,15 @@ output "secret_name" {
 ## About
 Creates an ssh key with a Lambda data source and saves it in a secrets manager secret, allowing the creation of ssh keys without saving them in state
 
+## Dependencies
+* Python >= 3.8
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| terraform | ~> 0.12.28 |
+| terraform | >= 0.12.28, < 0.14.0 |
 | aws | >= 2.45.0, < 4.0.0 |
 | null | ~>2.1.2 |
 
@@ -50,7 +53,7 @@ Creates an ssh key with a Lambda data source and saves it in a secrets manager s
 | name | Moniker to apply to all resources in the module | `string` | n/a | yes |
 | keepers | Arbitrary map of values that when changed will force a new password | `map(string)` | `{}` | no |
 | key\_bits | Number of bits to be used in RSA key generation | `number` | `2048` | no |
-| lambda\_version\_constraint | NPM-style version constraint for the version of the lambda code you want to use | `string` | `"^1.0.0-rc1"` | no |
+| lambda\_version\_constraint | NPM-style version constraint for the version of the lambda code you want to use | `string` | `"^1.0.2-rc2"` | no |
 | secret\_description | Set a description for the secret | `string` | `"An SSH key secret by Terraform"` | no |
 | tags | User-Defined tags | `map(string)` | `{}` | no |
 
