@@ -37,6 +37,7 @@ Creates an ssh key with a Lambda data source and saves it in a secrets manager s
 |------|---------|
 | terraform | >= 0.12.28, < 0.14.0 |
 | aws | >= 2.45.0, < 4.0.0 |
+| external | ~> 1.2 |
 | null | ~>2.1.2 |
 
 ## Providers
@@ -44,6 +45,7 @@ Creates an ssh key with a Lambda data source and saves it in a secrets manager s
 | Name | Version |
 |------|---------|
 | aws | >= 2.45.0, < 4.0.0 |
+| external | ~> 1.2 |
 | null | ~>2.1.2 |
 
 ## Inputs
