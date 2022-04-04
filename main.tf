@@ -90,6 +90,7 @@ resource "aws_iam_role_policy" "secret_write" {
   role        = aws_iam_role.this.name
 }
 
+#tfsec:ignore:aws-lambda-enable-tracing
 resource "aws_lambda_function" "this" {
   description      = "Uses ${local.lambda_repo_name} version ${local.lambda_version} to generate an ssh key and save it to a SecretsManager Secret"
   filename         = local.zipfile
@@ -124,12 +125,14 @@ resource "aws_lambda_function" "this" {
   ]
 }
 
+#tfsec:ignore:aws-cloudwatch-log-group-customer-key
 resource "aws_cloudwatch_log_group" "this" {
   name              = "/aws/lambda/${var.name}"
   retention_in_days = 14
   tags              = var.tags
 }
 
+#tfsec:ignore:aws-ssm-secret-use-customer-key
 resource "aws_secretsmanager_secret" "privkey" {
   name_prefix = "${var.name}-privkey-"
   description = var.secret_description
@@ -141,6 +144,7 @@ resource "aws_secretsmanager_secret" "privkey" {
   )
 }
 
+#tfsec:ignore:aws-ssm-secret-use-customer-key
 resource "aws_secretsmanager_secret" "pubkey" {
   name_prefix = "${var.name}-pubkey-"
   description = var.secret_description

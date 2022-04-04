@@ -1,6 +1,7 @@
 module "secure_ssh_key" {
-  source  = "rhythmictech/secure-ssh_key/aws"
-  version = "~> 1.0.0-rc1"
+  # source  = "rhythmictech/secure-ssh-key/aws"
+  # version = "2.0.1"
+  source = "../.."
 
   name = "my-secure-key"
 }

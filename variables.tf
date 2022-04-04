@@ -10,7 +10,7 @@ variable "name" {
 }
 
 variable "secret_description" {
-  default     = "An SSH key secret by Terraform" #tfsec:ignore:GEN001
+  default     = "An SSH key secret by Terraform" #tfsec:ignore:general-secrets-no-plaintext-exposure
   description = "Set a description for the secret"
   type        = string
 }
